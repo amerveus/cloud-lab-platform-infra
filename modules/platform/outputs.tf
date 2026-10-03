@@ -21,3 +21,31 @@ output "cluster_endpoint" {
 output "node_security_group_id" {
   value = module.eks.node_security_group_id
 }
+
+output "table_name" {
+  value = module.data.table_name
+}
+
+output "queue_url" {
+  value = module.messaging.queue_url
+}
+
+output "dlq_url" {
+  value = module.messaging.dlq_url
+}
+
+output "topic_arn" {
+  value = module.messaging.topic_arn
+}
+
+output "lab_api_role_arn" {
+  value = module.lab_api_identity.lab_api_role_arn
+}
+
+output "ecs_cluster_name" {
+  value = module.ecs_worker.cluster_name
+}
+
+output "worker_service_name" {
+  value = module.ecs_worker.service_name
+}

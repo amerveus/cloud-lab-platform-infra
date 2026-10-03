@@ -67,3 +67,20 @@ variable "node_max_pods" {
 locals {
   name = "${var.name_prefix}-${var.env}"
 }
+
+variable "alert_email" {
+  description = "Receives SNS notifications and alarms"
+  type        = string
+  sensitive   = true
+}
+
+variable "deletion_protection" {
+  description = "Protect stateful resources from deletion (true in prod)"
+  type        = bool
+}
+
+variable "worker_image_tag" {
+  description = "Initial worker image tag; CI deploys real revisions afterwards"
+  type        = string
+  default     = "bootstrap"
+}
