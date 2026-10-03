@@ -15,3 +15,8 @@ variable "admin_cidrs" {
 variable "cluster_admin_arns" {
   type = list(string)
 }
+
+variable "alert_email" {
+  type      = string
+  sensitive = true
+}

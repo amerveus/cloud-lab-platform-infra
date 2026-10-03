@@ -11,6 +11,8 @@ module "platform" {
   kubernetes_version           = var.kubernetes_version
   endpoint_public_access_cidrs = var.admin_cidrs
   cluster_admin_arns           = var.cluster_admin_arns
+  alert_email                  = var.alert_email
+  deletion_protection          = false
 
   node_instance_types = ["t3.small"]
   node_min_size       = 2
