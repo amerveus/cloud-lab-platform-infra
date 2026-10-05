@@ -37,3 +37,7 @@ output "lab_api_role_arn" {
 output "ecs_cluster_name" {
   value = module.platform.ecs_cluster_name
 }
+
+output "api_waf_acl_arn" {
+  value = module.platform.api_waf_acl_arn
+}

@@ -84,3 +84,9 @@ variable "worker_image_tag" {
   type        = string
   default     = "bootstrap"
 }
+
+variable "api_rate_limit" {
+  description = "Max requests per IP per 5-minute window before WAF blocks it"
+  type        = number
+  default     = 100
+}
