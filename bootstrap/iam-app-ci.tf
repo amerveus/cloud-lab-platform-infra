@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "app_ci_trust" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${local.app_repo}:ref:refs/heads/main"]
+      values   = ["${local.app_sub}:ref:refs/heads/main"]
     }
   }
 }
