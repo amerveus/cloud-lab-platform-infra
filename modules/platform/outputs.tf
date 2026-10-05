@@ -49,3 +49,7 @@ output "ecs_cluster_name" {
 output "worker_service_name" {
   value = module.ecs_worker.service_name
 }
+
+output "api_waf_acl_arn" {
+  value = aws_wafv2_web_acl.api.arn
+}
