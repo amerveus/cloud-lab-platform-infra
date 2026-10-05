@@ -26,6 +26,13 @@ module "eks" {
   endpoint_public_access_cidrs = var.endpoint_public_access_cidrs
   endpoint_private_access      = true
 
+  # Explicit KMS key admins: the module default is "whoever runs Terraform",
+  # which flips between laptop and CI and causes permanent drift.
+  kms_key_administrators = concat(
+    var.cluster_admin_arns,
+    ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cloud-lab-platform-gha-apply"],
+  )
+
   authentication_mode                      = "API"
   enable_cluster_creator_admin_permissions = false
   access_entries                           = local.access_entries
