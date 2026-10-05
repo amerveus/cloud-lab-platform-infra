@@ -215,3 +215,9 @@ output "execution_role_arn" {
 output "task_family" {
   value = aws_ecs_task_definition.worker.family
 }
+
+variable "min_tasks" {
+  description = "Warm workers kept running. 0 relies on CloudWatch SQS metrics, which lag by minutes on idle queues."
+  type        = number
+  default     = 1
+}

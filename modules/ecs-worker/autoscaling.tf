@@ -2,7 +2,7 @@ resource "aws_appautoscaling_target" "worker" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 0
+  min_capacity       = var.min_tasks
   max_capacity       = var.max_tasks
 }
 
@@ -45,7 +45,7 @@ resource "aws_appautoscaling_policy" "scale_in" {
 
     step_adjustment {
       metric_interval_upper_bound = 0
-      scaling_adjustment          = 0
+      scaling_adjustment          = var.min_tasks
     }
   }
 }
