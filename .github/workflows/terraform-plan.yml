@@ -31,6 +31,15 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false
 
+      - name: IaC misconfiguration scan (Trivy), before any init downloads module code
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          trivyignores: .trivyignore.yaml
+
       - name: terraform fmt
         run: terraform fmt -check -recursive
 
@@ -40,14 +49,6 @@ jobs:
             echo "== $d"
             (cd "$d" && terraform init -backend=false -input=false > /dev/null && terraform validate)
           done
-
-      - name: IaC misconfiguration scan (Trivy)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          scan-type: config
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          exit-code: "1"
 
   plan:
     name: plan-${{ matrix.env }}

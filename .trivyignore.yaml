@@ -1,0 +1,40 @@
+# Accepted IaC findings. Every entry: scoped to a path, justified, and expiring.
+# On expiry the finding fails CI again and must be re-reviewed.
+misconfigurations:
+  - id: AWS-0132
+    paths: ["bootstrap/state.tf"]
+    statement: >-
+      State bucket is encrypted with SSE-S3 (AES-256). Access is IAM-scoped, public access
+      is blocked, and a bucket policy enforces TLS. A customer-managed key changes key
+      management, not who can read state. Revisit if per-access key audit logs are required.
+    expired_at: 2027-01-01
+
+  - id: AWS-0095
+    paths: ["modules/messaging/main.tf"]
+    statement: >-
+      Topic carries alarm notifications only, no secrets. CloudWatch alarms cannot publish to
+      a topic encrypted with the AWS-managed SNS key. Upgrade path: customer-managed KMS key
+      whose policy allows cloudwatch.amazonaws.com.
+    expired_at: 2027-01-01
+
+  - id: AWS-0104
+    paths: ["modules/ecs-worker/main.tf"]
+    statement: >-
+      Worker egress is limited to TCP 443 (AWS APIs via NAT). The destination must be
+      0.0.0.0/0 because AWS public endpoints have no fixed CIDR. Upgrade path: VPC interface
+      endpoints plus prefix-list egress rules.
+    expired_at: 2027-01-01
+
+  - id: AWS-0040
+    statement: >-
+      Public EKS API endpoint is restricted to the admin /32 (endpoint_public_access_cidrs,
+      marked sensitive); nodes use the private endpoint. Upgrade path: private-only endpoint
+      reached through the SSM ops host.
+    expired_at: 2027-01-01
+
+  - id: AWS-0104
+    paths: ["**/node_groups.tf"]
+    statement: >-
+      EKS module default node egress. Nodes need outbound HTTPS to ECR, EKS, and AWS APIs.
+      Upgrade path: VPC interface endpoints.
+    expired_at: 2027-01-01
