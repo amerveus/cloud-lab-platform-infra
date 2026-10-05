@@ -10,6 +10,7 @@ variable "kubernetes_version" {
 variable "admin_cidrs" {
   description = "Your public IP as x.x.x.x/32"
   type        = list(string)
+  sensitive   = true
 }
 
 variable "cluster_admin_arns" {

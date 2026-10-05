@@ -35,6 +35,7 @@ variable "kubernetes_version" {
 variable "endpoint_public_access_cidrs" {
   description = "Public IPs allowed to reach the EKS API"
   type        = list(string)
+  sensitive   = true
 }
 
 variable "cluster_admin_arns" {
