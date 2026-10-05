@@ -1,22 +1,14 @@
 # Application secrets live in AWS Secrets Manager; External Secrets Operator
-# syncs them into Kubernetes. Nothing secret is ever committed to Git.
+# syncs them into Kubernetes. Terraform owns the secret CONTAINER only. Values
+# are set out-of-band (see docs/runbooks) so they never enter Terraform state,
+# which the PR plan role can read.
 
 data "aws_caller_identity" "current" {}
-
-resource "random_password" "chaos_token" {
-  length  = 32
-  special = false
-}
 
 resource "aws_secretsmanager_secret" "chaos_token" {
   name                    = "cloud-lab-platform/${var.env}/chaos-token"
   description             = "Gates the fault-injection endpoint used for alert demos"
   recovery_window_in_days = var.deletion_protection ? 30 : 0
-}
-
-resource "aws_secretsmanager_secret_version" "chaos_token" {
-  secret_id     = aws_secretsmanager_secret.chaos_token.id
-  secret_string = random_password.chaos_token.result
 }
 
 # External Secrets Operator: read-only access to this environment's secrets only
