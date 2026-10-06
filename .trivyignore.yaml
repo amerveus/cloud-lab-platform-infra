@@ -38,3 +38,17 @@ misconfigurations:
       EKS module default node egress. Nodes need outbound HTTPS to ECR, EKS, and AWS APIs.
       Upgrade path: VPC interface endpoints.
     expired_at: 2027-01-01
+
+  - id: AWS-0104
+    paths: ["modules/ops-host/main.tf"]
+    statement: >-
+      Ops host egress is limited to TCP 443 (SSM, package repos, GitHub releases); AWS and
+      GitHub endpoints have no fixed CIDR. Upgrade path: SSM/S3 VPC endpoints + a package mirror.
+    expired_at: 2027-01-01
+
+  - id: AWS-0132
+    paths: ["modules/ops-host/main.tf"]
+    statement: >-
+      SSM transfer bucket holds short-lived Ansible module files (expired after 1 day), SSE-S3
+      encrypted, public access blocked. A customer-managed key adds no meaningful protection here.
+    expired_at: 2027-01-01

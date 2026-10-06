@@ -53,3 +53,11 @@ output "worker_service_name" {
 output "api_waf_acl_arn" {
   value = aws_wafv2_web_acl.api.arn
 }
+
+output "ops_host_instance_id" {
+  value = module.ops_host.instance_id
+}
+
+output "ssm_transfer_bucket" {
+  value = module.ops_host.ssm_transfer_bucket
+}

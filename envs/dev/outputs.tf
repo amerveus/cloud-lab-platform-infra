@@ -41,3 +41,7 @@ output "ecs_cluster_name" {
 output "api_waf_acl_arn" {
   value = module.platform.api_waf_acl_arn
 }
+
+output "ops_host_instance_id" {
+  value = module.platform.ops_host_instance_id
+}
