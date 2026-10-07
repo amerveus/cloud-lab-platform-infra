@@ -1,0 +1,6 @@
+- name: Configure ops hosts
+  hosts: role_ops_host
+  become: true
+  roles:
+    - baseline
+    - node_exporter

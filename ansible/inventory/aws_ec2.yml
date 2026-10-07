@@ -1,0 +1,17 @@
+# Dynamic inventory: hosts are discovered from EC2 tags, never hard-coded.
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  tag:Project: cloud-lab-platform
+  tag:Role: ops-host
+  instance-state-name: running
+hostnames:
+  - instance-id
+keyed_groups:
+  - key: ec2_tags.Role
+    prefix: role
+  - key: ec2_tags.Environment
+    prefix: env
+compose:
+  ansible_host: instance_id
