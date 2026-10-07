@@ -1,0 +1,46 @@
+- name: System user with no login shell and no home
+  ansible.builtin.user:
+    name: node_exporter
+    system: true
+    shell: /sbin/nologin
+    create_home: false
+
+- name: Download release, verified against the published SHA-256 checksums
+  ansible.builtin.get_url:
+    url: "{{ node_exporter_release_url }}/{{ node_exporter_dir }}.tar.gz"
+    dest: "/tmp/{{ node_exporter_dir }}.tar.gz"
+    checksum: "sha256:{{ node_exporter_release_url }}/sha256sums.txt"
+    mode: "0644"
+
+- name: Unpack
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ node_exporter_dir }}.tar.gz"
+    dest: /opt
+    remote_src: true
+    creates: "/opt/{{ node_exporter_dir }}/node_exporter"
+
+- name: Install the binary
+  ansible.builtin.copy:
+    src: "/opt/{{ node_exporter_dir }}/node_exporter"
+    dest: /usr/local/bin/node_exporter
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart node_exporter
+
+- name: Hardened systemd unit
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart node_exporter
+
+- name: Running and enabled at boot
+  ansible.builtin.systemd_service:
+    name: node_exporter
+    state: started
+    enabled: true
+    daemon_reload: true

@@ -1,0 +1,54 @@
+- name: Apply available security updates
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    security: true
+    update_only: true
+
+- name: Install baseline packages
+  ansible.builtin.dnf:
+    name:
+      - audit
+      - chrony
+      - jq
+    state: present
+
+- name: Keep time sync and audit logging running
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - chronyd
+    - auditd
+
+- name: Disable SSH entirely (all access is through SSM)
+  ansible.builtin.systemd_service:
+    name: sshd
+    state: stopped
+    enabled: false
+
+- name: Kernel network hardening
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: present
+    reload: true
+  loop: "{{ sysctl_hardening | dict2items }}"
+  vars:
+    sysctl_hardening:
+      net.ipv4.conf.all.send_redirects: "0"
+      net.ipv4.conf.default.send_redirects: "0"
+      net.ipv4.conf.all.accept_redirects: "0"
+      net.ipv4.conf.all.rp_filter: "1"
+      net.ipv4.conf.all.log_martians: "1"
+
+- name: Login banner
+  ansible.builtin.copy:
+    dest: /etc/issue.net
+    content: |
+      Authorized use only. Managed by Ansible (cloud-lab-platform); access is logged via AWS SSM.
+    owner: root
+    group: root
+    mode: "0644"
